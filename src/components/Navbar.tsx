@@ -36,8 +36,8 @@ const Navbar = () => {
             <a href="tel:+918690720859" className="flex items-center gap-1.5 hover:text-secondary transition-colors">
               <Phone size={12} /> +91 86907 20859
             </a>
-            <a href="mailto:info@eventsauditor.com" className="flex items-center gap-1.5 hover:text-secondary transition-colors">
-              <Mail size={12} /> info@eventsauditor.com
+            <a href="mailto:contact@eventsauditor.com" className="flex items-center gap-1.5 hover:text-secondary transition-colors">
+              <Mail size={12} /> contact@eventsauditor.com
             </a>
           </div>
           <div className="flex items-center gap-1.5 text-primary-foreground/70">
