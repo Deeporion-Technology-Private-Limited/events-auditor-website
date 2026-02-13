@@ -1,23 +1,34 @@
-import "dotenv/config";
-import express from "express";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
-import nodemailer from "nodemailer";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const app = express();
-const PORT = process.env.PORT || 3001;
+const nodemailer = require("nodemailer");
 
 const TO_EMAIL = "contact@eventsauditor.com";
 const SUBJECT = "New Website Enquiry - Events Auditor";
 
-app.use(cors());
-app.use(express.json());
+function escapeHtml(str) {
+  if (!str) return "";
+  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  return String(str).replace(/[&<>"']/g, (c) => map[c]);
+}
 
-app.post("/api/enquiry", async (req, res) => {
-  const { name, phone, email, eventType, message } = req.body || {};
+function sendJson(res, status, data) {
+  res.setHeader("Content-Type", "application/json");
+  res.status(status).end(JSON.stringify(data));
+}
 
+module.exports = async function handler(req, res) {
+  if (req.method !== "POST") {
+    sendJson(res, 405, { success: false, error: "Method not allowed" });
+    return;
+  }
+
+  let body;
+  try {
+    body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
+  } catch {
+    sendJson(res, 400, { success: false, error: "Invalid JSON body." });
+    return;
+  }
+
+  const { name, phone, email, eventType, message } = body;
   const nameTrim = typeof name === "string" ? name.trim() : "";
   const emailTrim = typeof email === "string" ? email.trim() : "";
   const messageTrim = typeof message === "string" ? message.trim() : "";
@@ -25,20 +36,22 @@ app.post("/api/enquiry", async (req, res) => {
   const phoneVal = typeof phone === "string" ? phone.trim() : "";
 
   if (!nameTrim || !emailTrim || !messageTrim) {
-    return res.status(400).json({
+    sendJson(res, 400, {
       success: false,
       error: "Name, email and message are required.",
     });
+    return;
   }
 
   const smtpEmail = process.env.SMTP_EMAIL;
   const smtpPassword = process.env.SMTP_PASSWORD;
 
   if (!smtpEmail || !smtpPassword) {
-    return res.status(500).json({
+    sendJson(res, 500, {
       success: false,
       error: "Email service is not configured.",
     });
+    return;
   }
 
   const transporter = nodemailer.createTransport({
@@ -76,28 +89,11 @@ app.post("/api/enquiry", async (req, res) => {
       html,
       replyTo: emailTrim,
     });
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    return res.status(500).json({
+    sendJson(res, 200, { success: true });
+  } catch {
+    sendJson(res, 500, {
       success: false,
       error: "Failed to send enquiry. Please try again.",
     });
   }
-});
-
-function escapeHtml(str) {
-  if (!str) return "";
-  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-  return String(str).replace(/[&<>"']/g, (c) => map[c]);
-}
-
-const distPath = path.join(__dirname, "dist");
-app.use(express.static(distPath));
-app.get("/api/*", (_req, res) => res.status(404).json({ error: "Not found" }));
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+};
