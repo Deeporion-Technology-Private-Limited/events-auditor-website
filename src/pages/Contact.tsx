@@ -51,7 +51,8 @@ const Contact = () => {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error(data.error || "Something went wrong. Please try again.");
+        const message = data.error || data.message || "Something went wrong. Please try again.";
+        toast.error(message);
         return;
       }
       toast.success("Enquiry sent. We'll get back to you shortly.");
