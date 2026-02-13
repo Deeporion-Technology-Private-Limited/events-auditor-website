@@ -5,9 +5,10 @@ import AnimatedSection from "@/components/AnimatedSection";
 import heroBg from "@/assets/hero-bg.jpg";
 import aboutTeam from "@/assets/about-team.jpg";
 import clientLogos from "@/assets/client-logos.png";
+import { EXPERIENCE_YEARS } from "@/constants";
 
 const stats = [
-  { value: "5+", label: "Years Experience" },
+  { value: EXPERIENCE_YEARS, label: "Years Experience" },
   { value: "50+", label: "Events Audited" },
   { value: "10-20%", label: "Budget Savings" },
   { value: "100%", label: "Happy Clients" },
