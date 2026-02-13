@@ -5,7 +5,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import heroBg from "@/assets/hero-bg.jpg";
 import aboutTeam from "@/assets/about-team.jpg";
 import clientLogos from "@/assets/client-logos.png";
-import { EXPERIENCE_YEARS } from "@/constants";
+import { CTA_BUTTON_TEXT, EXPERIENCE_YEARS } from "@/constants";
 
 const stats = [
   { value: EXPERIENCE_YEARS, label: "Years Experience" },
@@ -62,9 +62,9 @@ const Index = () => {
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/contact"
-                className="bg-secondary text-secondary-foreground px-8 py-3.5 rounded-lg font-body font-semibold hover-lift inline-flex items-center gap-2"
+                className="bg-secondary text-secondary-foreground px-6 py-3.5 sm:px-8 rounded-lg font-body font-semibold hover-lift inline-flex items-center gap-2"
               >
-                Book Audit <ChevronRight size={18} />
+                {CTA_BUTTON_TEXT} <ChevronRight size={18} />
               </Link>
               <a
                 href="tel:+918690720859"

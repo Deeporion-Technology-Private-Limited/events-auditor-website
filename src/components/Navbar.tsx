@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone, Mail, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo.png";
+import { CTA_BUTTON_TEXT } from "@/constants";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -88,7 +89,7 @@ const Navbar = () => {
             className="flex items-center gap-2 bg-secondary text-secondary-foreground px-5 py-2.5 rounded-lg font-body font-semibold text-sm hover-lift"
           >
             <Phone size={16} />
-            Book Audit
+            {CTA_BUTTON_TEXT}
           </a>
         </div>
 
@@ -108,7 +109,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-card/98 backdrop-blur-xl border-b border-border overflow-hidden"
+            className="md:hidden bg-slate-900/95 backdrop-blur-md border-b border-white/10 overflow-hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
               {navItems.map((item) => (
@@ -117,8 +118,8 @@ const Navbar = () => {
                   to={item.path}
                   className={`py-3 px-4 rounded-lg font-body font-medium transition-colors ${
                     location.pathname === item.path
-                      ? "bg-secondary/10 text-secondary"
-                      : "text-foreground hover:bg-muted"
+                      ? "bg-secondary text-secondary-foreground"
+                      : "text-white hover:bg-secondary/20"
                   }`}
                 >
                   {item.label}
@@ -129,7 +130,7 @@ const Navbar = () => {
                 className="mt-2 flex items-center justify-center gap-2 bg-secondary text-secondary-foreground px-5 py-3 rounded-lg font-body font-semibold"
               >
                 <Phone size={16} />
-                Book Audit
+                {CTA_BUTTON_TEXT}
               </a>
             </div>
           </motion.div>
