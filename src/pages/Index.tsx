@@ -7,10 +7,10 @@ import aboutTeam from "@/assets/about-team.jpg";
 import clientLogos from "@/assets/client-logos.png";
 
 const stats = [
-  { value: "15+", label: "Years Experience" },
-  { value: "500+", label: "Events Audited" },
+  { value: "5+", label: "Years Experience" },
+  { value: "50+", label: "Events Audited" },
   { value: "10-20%", label: "Budget Savings" },
-  { value: "100+", label: "Happy Clients" },
+  { value: "100%", label: "Happy Clients" },
 ];
 
 const services = [
