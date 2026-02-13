@@ -1,10 +1,11 @@
-import { useState, lazy, Suspense } from "react";
+import { useState } from "react";
 import { MapPin, Phone, Mail, Send, CheckCircle2, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import AnimatedSection from "@/components/AnimatedSection";
 
-const GoogleMapSection = lazy(() => import("@/components/GoogleMapSection"));
+const MAP_EMBED_SRC =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d56939.91253275305!2d75.63481807708739!3d26.879856485049547!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4b035686cd0b%3A0xb86b67240c0414ef!2sSumer%20singh%20udawat!5e0!3m2!1sen!2sin!4v1771006760320!5m2!1sen!2sin";
 
 const EVENT_TYPES = ["", "EXPO", "Trade Show", "Conference", "Exhibition", "Wedding / Birthday", "Other"] as const;
 
@@ -240,20 +241,29 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Our Location - Map (lazy loaded) */}
-      <Suspense
-        fallback={
-          <section className="section-padding">
-            <div className="container-narrow">
-              <div className="divider-line mb-4" />
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">Our Location</h2>
-              <div className="w-full h-[300px] md:h-[425px] rounded-xl shadow-lg bg-muted animate-pulse" />
+      {/* Our Location - Map */}
+      <section className="section-padding" aria-labelledby="our-location-heading">
+        <div className="container-narrow">
+          <AnimatedSection className="mb-6">
+            <div className="divider-line mb-4" />
+            <h2 id="our-location-heading" className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+              Our Location
+            </h2>
+          </AnimatedSection>
+          <AnimatedSection>
+            <div className="w-full max-w-full rounded-xl shadow-lg overflow-hidden h-[300px] md:h-[450px]">
+              <iframe
+                src={MAP_EMBED_SRC}
+                title="Google Map Location"
+                className="w-full h-full border-0"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
-          </section>
-        }
-      >
-        <GoogleMapSection />
-      </Suspense>
+          </AnimatedSection>
+        </div>
+      </section>
     </main>
   );
 };
