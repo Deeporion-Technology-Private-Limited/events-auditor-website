@@ -14,7 +14,7 @@ function sendJson(res, status, data) {
   res.status(status).end(JSON.stringify(data));
 }
 
-module.exports = async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { success: false, error: "Method not allowed" });
     return;
@@ -43,22 +43,20 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const smtpEmail = process.env.SMTP_EMAIL;
-  const smtpPassword = process.env.SMTP_PASSWORD;
-
-  if (!smtpEmail || !smtpPassword) {
-    sendJson(res, 500, {
-      success: false,
-      error: "Email service is not configured.",
-    });
+  if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
+    console.log("SMTP Email:", process.env.SMTP_EMAIL ? "Loaded" : "Missing");
+    console.log("SMTP Password:", process.env.SMTP_PASSWORD ? "Loaded" : "Missing");
+    sendJson(res, 500, { success: false, error: "Email configuration missing" });
     return;
   }
+
+  console.log("SMTP Email:", process.env.SMTP_EMAIL ? "Loaded" : "Missing");
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: smtpEmail,
-      pass: smtpPassword,
+      user: process.env.SMTP_EMAIL,
+      pass: process.env.SMTP_PASSWORD,
     },
   });
 
@@ -83,17 +81,20 @@ module.exports = async function handler(req, res) {
 
   try {
     await transporter.sendMail({
-      from: smtpEmail,
+      from: process.env.SMTP_EMAIL,
       to: TO_EMAIL,
       subject: SUBJECT,
       html,
       replyTo: emailTrim,
     });
     sendJson(res, 200, { success: true });
-  } catch {
+  } catch (err) {
+    console.error("Enquiry send error:", err);
     sendJson(res, 500, {
       success: false,
       error: "Failed to send enquiry. Please try again.",
     });
   }
-};
+}
+
+module.exports = handler;
