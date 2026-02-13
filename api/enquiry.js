@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const TO_EMAIL = "contact@eventsauditor.com";
 const SUBJECT = "New Website Enquiry - Events Auditor";
@@ -97,4 +97,4 @@ async function handler(req, res) {
   }
 }
 
-module.exports = handler;
+export default handler;
