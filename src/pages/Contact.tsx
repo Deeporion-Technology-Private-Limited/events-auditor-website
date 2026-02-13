@@ -1,16 +1,66 @@
 import { useState, lazy, Suspense } from "react";
-import { MapPin, Phone, Mail, Send, CheckCircle2 } from "lucide-react";
+import { MapPin, Phone, Mail, Send, CheckCircle2, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const GoogleMapSection = lazy(() => import("@/components/GoogleMapSection"));
 
+const EVENT_TYPES = ["", "EXPO", "Trade Show", "Conference", "Exhibition", "Wedding / Birthday", "Other"] as const;
+
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    eventType: "",
+    message: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetForm = () => {
+    setForm({ name: "", phone: "", email: "", eventType: "", message: "" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    const { name, email, message } = form;
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      toast.error("Please fill in name, email and message.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim(),
+          eventType: form.eventType.trim(),
+          message: form.message.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.error || "Something went wrong. Please try again.");
+        return;
+      }
+      toast.success("Enquiry sent. We'll get back to you shortly.");
+      setSubmitted(true);
+      resetForm();
+    } catch {
+      toast.error("Failed to send. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -109,38 +159,78 @@ const Contact = () => {
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
                         <label className="block font-body text-sm font-medium text-foreground mb-1.5">Name</label>
-                        <input required type="text" className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all" placeholder="Your name" />
+                        <input
+                          required
+                          type="text"
+                          name="name"
+                          value={form.name}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                          placeholder="Your name"
+                        />
                       </div>
                       <div>
                         <label className="block font-body text-sm font-medium text-foreground mb-1.5">Phone</label>
-                        <input type="tel" className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all" placeholder="+91 XXXXX XXXXX" />
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={form.phone}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                          placeholder="+91 XXXXX XXXXX"
+                        />
                       </div>
                     </div>
                     <div>
                       <label className="block font-body text-sm font-medium text-foreground mb-1.5">Email</label>
-                      <input required type="email" className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all" placeholder="you@email.com" />
+                      <input
+                        required
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                        placeholder="you@email.com"
+                      />
                     </div>
                     <div>
                       <label className="block font-body text-sm font-medium text-foreground mb-1.5">Event Type</label>
-                      <select className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all">
-                        <option value="">Select event type</option>
-                        <option>EXPO</option>
-                        <option>Trade Show</option>
-                        <option>Conference</option>
-                        <option>Exhibition</option>
-                        <option>Wedding / Birthday</option>
-                        <option>Other</option>
+                      <select
+                        name="eventType"
+                        value={form.eventType}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+                      >
+                        {EVENT_TYPES.map((opt) => (
+                          <option key={opt || "empty"} value={opt}>
+                            {opt || "Select event type"}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div>
                       <label className="block font-body text-sm font-medium text-foreground mb-1.5">Message</label>
-                      <textarea required rows={4} className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all resize-none" placeholder="Tell us about your event..." />
+                      <textarea
+                        required
+                        rows={4}
+                        name="message"
+                        value={form.message}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background font-body text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all resize-none"
+                        placeholder="Tell us about your event..."
+                      />
                     </div>
                     <button
                       type="submit"
-                      className="w-full bg-secondary text-secondary-foreground px-8 py-3.5 rounded-lg font-body font-semibold hover-lift inline-flex items-center justify-center gap-2"
+                      disabled={loading}
+                      className="w-full bg-secondary text-secondary-foreground px-8 py-3.5 rounded-lg font-body font-semibold hover-lift inline-flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none"
                     >
-                      <Send size={18} /> Submit Now
+                      {loading ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Send size={18} />
+                      )}{" "}
+                      {loading ? "Sending…" : "Submit Now"}
                     </button>
                   </motion.form>
                 )}
