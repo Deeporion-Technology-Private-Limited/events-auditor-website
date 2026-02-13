@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { MapPin, Phone, Mail, Send, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedSection from "@/components/AnimatedSection";
+
+const GoogleMapSection = lazy(() => import("@/components/GoogleMapSection"));
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -147,6 +149,21 @@ const Contact = () => {
           </AnimatedSection>
         </div>
       </section>
+
+      {/* Our Location - Map (lazy loaded) */}
+      <Suspense
+        fallback={
+          <section className="section-padding">
+            <div className="container-narrow">
+              <div className="divider-line mb-4" />
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">Our Location</h2>
+              <div className="w-full h-[300px] md:h-[425px] rounded-xl shadow-lg bg-muted animate-pulse" />
+            </div>
+          </section>
+        }
+      >
+        <GoogleMapSection />
+      </Suspense>
     </main>
   );
 };
