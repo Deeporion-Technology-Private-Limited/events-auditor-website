@@ -50,10 +50,8 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-card/95 backdrop-blur-lg shadow-lg border-b border-border/50"
-            : "bg-transparent mt-[36px]"
+        className={`fixed left-0 right-0 z-50 transition-all duration-500 bg-white shadow-md border-b border-border/50 ${
+          scrolled ? "top-0" : "top-0 mt-[36px] md:mt-[36px]"
         }`}
       >
       <div className="container-narrow flex items-center justify-between py-4 px-6 lg:px-12">
@@ -70,9 +68,7 @@ const Navbar = () => {
               className={`relative font-body font-medium text-sm tracking-wide transition-colors duration-300 ${
                 location.pathname === item.path
                   ? "text-secondary"
-                  : scrolled
-                  ? "text-foreground hover:text-secondary"
-                  : "text-primary-foreground/90 hover:text-primary-foreground"
+                  : "text-foreground hover:text-secondary"
               }`}
             >
               {item.label}
@@ -96,7 +92,7 @@ const Navbar = () => {
         {/* Mobile Toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`md:hidden p-2 rounded-lg ${scrolled ? "text-foreground" : "text-primary-foreground"}`}
+          className="md:hidden p-2 rounded-lg text-foreground"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
