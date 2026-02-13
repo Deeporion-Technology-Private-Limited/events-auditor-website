@@ -1,6 +1,7 @@
 import { Shield, TrendingUp, Handshake, Users, Award, Target } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 import aboutTeam from "@/assets/about-team.jpg";
+import { EXPERIENCE_YEARS } from "@/constants";
 
 const values = [
   { icon: Handshake, title: "Goodwill", desc: "Builds lasting trust and reputation through transparent audits that verify contracts, prevent disputes, and showcase ethical practices to stakeholders." },
@@ -30,22 +31,33 @@ const About = () => (
       </div>
     </section>
 
-    {/* Story */}
+    {/* Story — Years Of Proven Experience */}
     <section className="section-padding">
-      <div className="container-narrow grid md:grid-cols-2 gap-12 items-center">
-        <AnimatedSection direction="left">
-          <img src={aboutTeam} alt="Our team at work" className="rounded-2xl shadow-xl" />
-        </AnimatedSection>
-        <AnimatedSection direction="right" delay={0.2}>
-          <div className="divider-line mb-4" />
-          <h2 className="font-heading text-3xl font-bold text-foreground mb-4">15+ Years Of Proven Experience</h2>
-          <p className="font-body text-muted-foreground leading-relaxed mb-4">
-            Our dedicated team brings deep specialization in event auditing, unlocking value by identifying revenue leakages, optimizing costs, and ensuring contractual compliance.
-          </p>
-          <p className="font-body text-muted-foreground leading-relaxed">
-            This results in substantial financial savings—often 10-20% of event budgets—while elevating service delivery standards, enhancing transparency, and boosting stakeholder satisfaction from organizers to vendors.
-          </p>
-        </AnimatedSection>
+      <div className="container-narrow">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+          <AnimatedSection direction="left">
+            <img src={aboutTeam} alt="Our team at work" className="rounded-2xl shadow-xl w-full" />
+          </AnimatedSection>
+          <AnimatedSection direction="right" delay={0.2}>
+            <div className="flex flex-col gap-6">
+              <div className="divider-line w-16 shrink-0" />
+              <div className="space-y-2">
+                <p className="font-heading text-4xl md:text-5xl font-bold gradient-text">
+                  {EXPERIENCE_YEARS}
+                </p>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+                  Years Of Proven Experience
+                </h2>
+              </div>
+              <p className="font-body text-muted-foreground leading-relaxed">
+                Our dedicated team brings deep specialization in event auditing, unlocking value by identifying revenue leakages, optimizing costs, and ensuring contractual compliance.
+              </p>
+              <p className="font-body text-muted-foreground leading-relaxed">
+                This results in substantial financial savings—often 10-20% of event budgets—while elevating service delivery standards, enhancing transparency, and boosting stakeholder satisfaction from organizers to vendors.
+              </p>
+            </div>
+          </AnimatedSection>
+        </div>
       </div>
     </section>
 

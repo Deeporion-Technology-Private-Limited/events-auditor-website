@@ -27,3 +27,9 @@ npm run dev
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint
 - `npm run test` - Run tests
+
+## Deployment (Vercel)
+
+Deploy with [Vercel](https://vercel.com). The contact form uses the serverless function at `/api/enquiry`.
+
+- **Environment (Vercel Dashboard → Project → Settings → Environment Variables):** `SMTP_EMAIL`, `SMTP_PASSWORD` (Gmail App Password for enquiry emails).
